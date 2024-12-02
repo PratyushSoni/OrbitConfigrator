@@ -35,7 +35,7 @@ button:hover {
 }
 
 .MuiListItem-root:hover {
-  background-color: #FFE6A9 !important; 
+  background-color: #D4EBF8 !important; 
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
