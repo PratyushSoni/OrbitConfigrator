@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   ListItemIcon,
+  ListItemButton,
   ListItemText,
   Toolbar,
   Box,
@@ -24,22 +25,29 @@ import MapIcon from "@mui/icons-material/Map";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 
-const drawerWidth = 250;
+import ConnectDisconnect from "./pages/ConnectDisconnect";
+import Home from "./pages/Home";
+import IMUData from "./pages/IMUData";
+import Logger from "./pages/Logger";
+import Map from "./pages/Map";
+import SensorHealth from "./pages/SensorHealth";
 
-// Page Components
-const Home = () => <div>Home Content</div>;
-const SensorHealth = () => <div>Sensor Health Content</div>;
-const Logger = () => <div>Logger Content</div>;
-const IMUData = () => <div>IMU Data Content</div>;
-const ConnectDisconnect = () => <div>Connect/Disconnect Content</div>;
-const Map = () => <div>Map Content</div>;
+const drawerWidth = 250;
 
 const navItems = [
   { label: "Home", icon: <HomeIcon />, path: "/" },
-  { label: "Sensor Health", icon: <HealthAndSafetyIcon />, path: "/sensor-health" },
+  {
+    label: "Sensor Health",
+    icon: <HealthAndSafetyIcon />,
+    path: "/sensor-health",
+  },
   { label: "Logger", icon: <StorageIcon />, path: "/logger" },
   { label: "IMU Data", icon: <SensorsIcon />, path: "/imu-data" },
-  { label: "Connect/Disconnect", icon: <LinkOffIcon />, path: "/connect-disconnect" },
+  {
+    label: "Connect/Disconnect",
+    icon: <LinkOffIcon />,
+    path: "/connect-disconnect",
+  },
   { label: "Map", icon: <MapIcon />, path: "/map" },
 ];
 
@@ -59,7 +67,7 @@ const App = () => {
     palette: {
       mode: isDarkMode ? "dark" : "light",
       primary: {
-        main: isDarkMode ? "#90caf9" : "#1976d2",
+        main: isDarkMode ? "#90caf9" : "#1976d2", // Icon Colour
       },
       background: {
         default: isDarkMode ? "#121212" : "#ffffff",
@@ -77,7 +85,16 @@ const App = () => {
       <Router>
         <Box sx={{ display: "flex" }}>
           {/* Hamburger Icon and Light/Dark Mode Toggle */}
-          <Box sx={{ position: "fixed", top: 10, left: 10, zIndex: 1300, display: "flex", alignItems: "center" }}>
+          <Box
+            sx={{
+              position: "fixed",
+              top: 10,
+              left: 10,
+              zIndex: 1300,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <IconButton onClick={toggleDrawer}>
               <MenuIcon />
             </IconButton>
@@ -106,18 +123,17 @@ const App = () => {
             <List>
               {navItems.map((item, index) => (
                 <ListItem
-                  button
                   key={index}
                   component={Link}
                   to={item.path}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: isDarkMode ? "#333333" : "#EBEAFF",
-                    },
-                  }}
+                  disablePadding
                 >
-                  <ListItemIcon sx={{ color: theme.palette.primary.main }}>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.label} />
+                  <ListItemButton sx={{ color: theme.palette.text.primary }}>
+                    <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.label} />
+                  </ListItemButton>
                 </ListItem>
               ))}
             </List>
@@ -140,7 +156,10 @@ const App = () => {
               <Route path="/sensor-health" element={<SensorHealth />} />
               <Route path="/logger" element={<Logger />} />
               <Route path="/imu-data" element={<IMUData />} />
-              <Route path="/connect-disconnect" element={<ConnectDisconnect />} />
+              <Route
+                path="/connect-disconnect"
+                element={<ConnectDisconnect />}
+              />
               <Route path="/map" element={<Map />} />
             </Routes>
           </Box>
