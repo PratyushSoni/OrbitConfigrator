@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CssBaseline,
   Drawer,
@@ -23,7 +23,6 @@ import SensorsIcon from "@mui/icons-material/Sensors";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import MapIcon from "@mui/icons-material/Map";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import "./App.css";
 
 import ConnectDisconnect from "./pages/ConnectDisconnect";
 import Home from "./pages/Home";
@@ -52,6 +51,8 @@ const navItems = [
 ];
 
 const App = () => {
+  
+
   const [isDrawerOpen, setDrawerOpen] = useState(true);
   const [isDarkMode, setDarkMode] = useState(false);
 
