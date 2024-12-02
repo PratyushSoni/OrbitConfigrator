@@ -60,13 +60,15 @@ ipcMain.handle("mavlink:connectPort", async (event, portName, baudRate) => {
       mavLinkConnection.parseMavLinkData((channel, data) => {
         win.webContents.send(channel, data);
       });
-      return `Port ${portName} opened successfully at ${baudRate}`;
+      console.log(`Port ${portName} opened successfully at ${baudRate}`);
+      return true;
     } else {
-      throw new Error(`Failed to connect to port ${portName}`);
+      console.error(`Failed to connect to port ${portName}`);
+      return false;
     }
   } catch (error) {
     console.error("Failed to connect to port:", error);
-    throw error;
+    return false;
   }
 });
 

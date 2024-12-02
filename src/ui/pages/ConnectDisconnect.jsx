@@ -47,12 +47,10 @@ const ConnectDisconnect = () => {
     };
     window.mavlink.onMavLinkData(mavLinkDataListener);
     return () => {
-      window.mavlink.onMavLinkData((event) => {
-        ipcRenderer.removeListener("mavlink:data", mavLinkDataListener);
-      });
+      window.mavlink.onMavLinkData(null);
     };
   }, []);
-  
+
   return (
     <Box sx={{ minWidth: 120 }}>
       <Autocomplete
