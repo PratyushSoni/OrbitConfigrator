@@ -29,49 +29,41 @@ export class MavLinkSerialConnection {
       const ports = await SerialPort.list();
       return ports;
     } catch (err) {
-      console.error("Error listing serial ports: ", err);
       throw err;
     }
   }
 
   connectPort(portName, baudRate = 115200) {
-    this.port = new SerialPort({ path: portName, baudRate: baudRate });
+    return new Promise((resolve, reject) => {
+      this.port = new SerialPort({ path: portName, baudRate: baudRate });
 
-    this.port.on("open", () => {
-      console.log(`Port ${portName} opened at baud rate ${baudRate}`);
+      this.port.on("open", () => {
+        resolve(true);
+      });
+
+      this.port.on("error", (err) => {
+        reject(false);
+      });
     });
-
-    this.port.on("error", (err) => {
-      console.error(`Error with serial port ${portName}:`, err);
-    });
-
-    return this.port;
   }
 
-  parseMavLinkData() {
-    if (!this.port) {
-      console.error("No port is connected. Please connect a port first.");
-      return;
-    }
-
-    const reader = this.port
-      .pipe(new MavLinkPacketSplitter())
-      .pipe(new MavLinkPacketParser());
-
-    reader.on("data", (packet) => {
-      const clazz = this.REGISTRY[packet.header.msgid];
-      if (clazz) {
-        const data = packet.protocol.data(packet.payload, clazz);
-        console.log("Received packet:", data);
+  disconnectPort() {
+    return new Promise((resolve, reject) => {
+      if (this.port && this.port.isOpen) {
+        this.port.close((err) => {
+          if (err) {
+            console.error("Error disconnecting the port:", err);
+            reject(err);
+          } else {
+            console.log("Port successfully disconnected.");
+            this.port = null;
+            resolve(true);
+          }
+        });
       } else {
-        console.log(
-          `Received packet with unknown msgid: ${packet.header.msgid}`
-        );
+        console.warn("Port is not open or already disconnected.");
+        resolve(false);
       }
-    });
-
-    reader.on("error", (err) => {
-      console.error("Error in MAVLink data parsing:", err);
     });
   }
 }

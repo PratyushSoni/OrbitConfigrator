@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
-import { Box, InputLabel, MenuItem, FormControl, Select, Button } from "@mui/material";
+import {
+  Box,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Button,
+} from "@mui/material";
 
 const ConnectDisconnect = () => {
   const [availablePorts, setAvailablePorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -20,16 +28,27 @@ const ConnectDisconnect = () => {
     setSelectedPort(event.target.value);
   };
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     if (selectedPort) {
       try {
-        window.mavlink.connectPort(selectedPort);
+        const response = await window.mavlink.connectPort(selectedPort);
         console.log(`Attempting to connect to ${selectedPort}`);
+        setIsConnected(response);
       } catch (error) {
         console.error("Error connecting to port:", error);
       }
     } else {
       console.error("No port selected");
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      const response = await window.mavlink.disconnectPort();
+      console.log(response);
+      setIsConnected(false);
+    } catch (error) {
+      console.error("Error disconnecting from port:", error);
     }
   };
 
@@ -43,6 +62,7 @@ const ConnectDisconnect = () => {
           value={selectedPort}
           label="Port"
           onChange={handleChange}
+          disabled={isConnected}
         >
           {availablePorts.length > 0 ? (
             availablePorts.map((port, index) => (
@@ -55,15 +75,15 @@ const ConnectDisconnect = () => {
           )}
         </Select>
       </FormControl>
-      
+
       <Button
         variant="contained"
-        color="primary"
-        onClick={handleConnect}
+        color={isConnected ? "secondary" : "primary"}
+        onClick={isConnected ? handleDisconnect : handleConnect}
         disabled={!selectedPort}
         sx={{ mt: 2 }}
       >
-        Connect
+        {isConnected ? "Disconnect" : "Connect"}
       </Button>
     </Box>
   );

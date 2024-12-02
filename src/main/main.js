@@ -42,7 +42,7 @@ app.on("window-all-closed", () => {
   }
 });
 
-ipcMain.handle("mavlink:listSerialPorts", async () => {
+ipcMain.handle("mavlink:listSerialPorts", async (event) => {
   try {
     return await mavLinkConnection.listSerialPorts();
   } catch (error) {
@@ -53,18 +53,28 @@ ipcMain.handle("mavlink:listSerialPorts", async () => {
 
 ipcMain.handle("mavlink:connectPort", async (event, portName, baudRate) => {
   try {
-    const port = mavLinkConnection.connectPort(portName, baudRate);
-    return `Port ${portName} opened successfully at ${baudRate}`;
+    const success = await mavLinkConnection.connectPort(portName, baudRate);
+    if (success) {
+      return `Port ${portName} opened successfully at ${baudRate}`;
+    } else {
+      throw new Error(`Failed to connect to port ${portName}`);
+    }
   } catch (error) {
     console.error("Failed to connect to port:", error);
     throw error;
   }
 });
 
-ipcMain.on("mavlink:parseMavLinkData", () => {
+ipcMain.handle("mavlink:disconnectPort", async (event) => {
   try {
-    mavLinkConnection.parseMavLinkData();
+    const success = await mavLinkConnection.disconnectPort();
+    if (success) {
+      return "Port successfully disconnected.";
+    } else {
+      return "Port is not open or already disconnected.";
+    }
   } catch (error) {
-    console.error("Failed to parse MAVLink data:", error);
+    console.error("Failed to disconnect port:", error);
+    throw error;
   }
 });
