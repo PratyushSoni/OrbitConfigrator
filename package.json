@@ -6,13 +6,35 @@
     "renderer:dev": "vite",
     "renderer:build": "vite build",
     "renderer:preview": "vite preview",
-    "dev": "concurrently --kill-others \"yarn renderer:dev\" \"wait-on http://localhost:5173 && yarn electron:start\""
+    "dev": "concurrently --kill-others \"yarn renderer:dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development yarn electron:start\"",
+    "build": "yarn run renderer:build && yarn run electron-builder"
+  },
+  "main": "./src/main/main.js",
+  "build": {
+    "appId": "com.example.orbitconfigrator",
+    "productName": "orbitconfigrator",
+    "files": [
+      "build/renderer/**/*",
+      "./src/main/main.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "build"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
+    }
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
+    "node-serial": "^0.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1"
@@ -23,7 +45,9 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
     "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "eslint": "^9.15.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
