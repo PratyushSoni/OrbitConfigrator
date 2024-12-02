@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  Button,
-} from "@mui/material";
+import { Box, Button, TextField, Autocomplete } from "@mui/material";
 
 const ConnectDisconnect = () => {
   const [availablePorts, setAvailablePorts] = useState([]);
@@ -23,10 +16,6 @@ const ConnectDisconnect = () => {
       }
     })();
   }, []);
-
-  const handleChange = (event) => {
-    setSelectedPort(event.target.value);
-  };
 
   const handleConnect = async () => {
     if (selectedPort) {
@@ -52,29 +41,36 @@ const ConnectDisconnect = () => {
     }
   };
 
+  useEffect(() => {
+    const mavLinkDataListener = (event, data) => {
+      console.log("Received MAVLink data in renderer:", data);
+    };
+    window.mavlink.onMavLinkData(mavLinkDataListener);
+    return () => {
+      window.mavlink.onMavLinkData((event) => {
+        ipcRenderer.removeListener("mavlink:data", mavLinkDataListener);
+      });
+    };
+  }, []);
+  
   return (
     <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <InputLabel id="port-select-label">Port</InputLabel>
-        <Select
-          labelId="port-select-label"
-          id="port-select"
-          value={selectedPort}
-          label="Port"
-          onChange={handleChange}
-          disabled={isConnected}
-        >
-          {availablePorts.length > 0 ? (
-            availablePorts.map((port, index) => (
-              <MenuItem key={index} value={port.path}>
-                {port.path}
-              </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>No ports available</MenuItem>
-          )}
-        </Select>
-      </FormControl>
+      <Autocomplete
+        freeSolo
+        id="port-select"
+        options={availablePorts.map((port) => port.path)}
+        value={selectedPort}
+        onChange={(event, newValue) => {
+          setSelectedPort(newValue || "");
+        }}
+        onInputChange={(event, newInputValue) => {
+          setSelectedPort(newInputValue);
+        }}
+        disabled={isConnected}
+        renderInput={(params) => (
+          <TextField {...params} label="Port" variant="outlined" />
+        )}
+      />
 
       <Button
         variant="contained"

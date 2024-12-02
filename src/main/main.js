@@ -8,8 +8,10 @@ const mavLinkConnection = new MavLinkSerialConnection();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let win;
+
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -55,6 +57,9 @@ ipcMain.handle("mavlink:connectPort", async (event, portName, baudRate) => {
   try {
     const success = await mavLinkConnection.connectPort(portName, baudRate);
     if (success) {
+      mavLinkConnection.parseMavLinkData((channel, data) => {
+        win.webContents.send(channel, data);
+      });
       return `Port ${portName} opened successfully at ${baudRate}`;
     } else {
       throw new Error(`Failed to connect to port ${portName}`);

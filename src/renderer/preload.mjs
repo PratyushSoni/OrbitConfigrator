@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld("mavlink", {
   connectPort: (portName, baudRate = 115200) =>
     ipcRenderer.invoke("mavlink:connectPort", portName, baudRate),
   disconnectPort: () => ipcRenderer.invoke("mavlink:disconnectPort"),
+  onMavLinkData: (callback) => ipcRenderer.on("mavlink:data", callback),
 });
