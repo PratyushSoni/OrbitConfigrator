@@ -10,10 +10,10 @@ import {
   Toolbar,
   Box,
   IconButton,
-  Switch,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import HomeIcon from "@mui/icons-material/Home";
@@ -25,6 +25,7 @@ import MapIcon from "@mui/icons-material/Map";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 
+// Importing page components
 import ConnectDisconnect from "./pages/ConnectDisconnect";
 import Home from "./pages/Home";
 import IMUData from "./pages/IMUData";
@@ -32,8 +33,9 @@ import Logger from "./pages/Logger";
 import Map from "./pages/Map";
 import SensorHealth from "./pages/SensorHealth";
 
-const drawerWidth = 250;
+const drawerWidth = 250; // Sidebar width
 
+// Navigation items for the sidebar
 const navItems = [
   { label: "Home", icon: <HomeIcon />, path: "/" },
   {
@@ -52,29 +54,35 @@ const navItems = [
 ];
 
 const App = () => {
+  // State for managing the sidebar visibility
   const [isDrawerOpen, setDrawerOpen] = useState(true);
+
+  // State for managing light/dark theme
   const [isDarkMode, setDarkMode] = useState(false);
 
+  // Toggles the sidebar open/close
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
 
+  // Toggles between light and dark themes
   const toggleTheme = () => {
     setDarkMode(!isDarkMode);
   };
 
+  // Dynamic theme configuration based on the light/dark mode
   const theme = createTheme({
     palette: {
-      mode: isDarkMode ? "dark" : "light",
+      mode: isDarkMode ? "dark" : "light", // Determines light or dark mode
       primary: {
-        main: isDarkMode ? "#90caf9" : "#1976d2", // Icon Colour
+        main: isDarkMode ? "#90caf9" : "#1976d2", // Sets primary color for icons
       },
       background: {
-        default: isDarkMode ? "#121212" : "#ffffff",
-        paper: isDarkMode ? "#1d1d1d" : "#ffffff",
+        default: isDarkMode ? "#121212" : "#ffffff", // Background color for the main content
+        paper: isDarkMode ? "#1d1d1d" : "#ffffff", // Background color for the sidebar
       },
       text: {
-        primary: isDarkMode ? "#ffffff" : "#000000",
+        primary: isDarkMode ? "#ffffff" : "#000000", // Text color
       },
     },
   });
@@ -84,7 +92,7 @@ const App = () => {
       <CssBaseline />
       <Router>
         <Box sx={{ display: "flex" }}>
-          {/* Hamburger Icon and Light/Dark Mode Toggle */}
+          {/* Fixed icons for hamburger menu and theme toggle */}
           <Box
             sx={{
               position: "fixed",
@@ -95,15 +103,17 @@ const App = () => {
               alignItems: "center",
             }}
           >
+            {/* Hamburger/Minimize Sidebar button */}
             <IconButton onClick={toggleDrawer}>
-              <MenuIcon />
+              {isDrawerOpen ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
+            {/* Light/Dark mode toggle button */}
             <IconButton onClick={toggleTheme} sx={{ marginLeft: 1 }}>
               {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Box>
 
-          {/* Sidebar */}
+          {/* Sidebar (Drawer) */}
           <Drawer
             variant="persistent"
             open={isDrawerOpen}
@@ -111,16 +121,17 @@ const App = () => {
               width: isDrawerOpen ? drawerWidth : 0,
               flexShrink: 0,
               "& .MuiDrawer-paper": {
-                width: drawerWidth,
+                width: drawerWidth, // Sidebar width
                 boxSizing: "border-box",
                 backgroundColor: theme.palette.background.paper,
                 color: theme.palette.text.primary,
-                transition: "width 0.3s ease",
+                transition: "width 0.3s ease", // Smooth opening/closing transition
               },
             }}
           >
-            <Toolbar />
+            <Toolbar /> {/* Provides space below the AppBar */}
             <List>
+              {/* Renders navigation items */}
               {navItems.map((item, index) => (
                 <ListItem
                   key={index}
@@ -139,18 +150,19 @@ const App = () => {
             </List>
           </Drawer>
 
-          {/* Main Content */}
+          {/* Main Content Area */}
           <Box
             component="main"
             sx={{
-              flexGrow: 1,
+              flexGrow: 1, // Expands to take available space
               bgcolor: theme.palette.background.default,
               color: theme.palette.text.primary,
-              p: 3,
+              p: 3, // Padding
               marginLeft: isDrawerOpen ? `${drawerWidth}px` : "0",
-              transition: "margin-left 0.3s ease",
+              transition: "margin-left 0.3s ease", // Smooth transition when sidebar opens/closes
             }}
           >
+            {/* Define routes for navigation */}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/sensor-health" element={<SensorHealth />} />
