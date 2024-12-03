@@ -8,5 +8,6 @@ export default defineConfig({
   publicDir: "../ui/public",
   build:{
     outDir:"../../build/renderer"
-  }
+  },
+  base: "./",
 });

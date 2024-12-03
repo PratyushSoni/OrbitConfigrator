@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CssBaseline,
   Drawer,
@@ -23,7 +23,6 @@ import SensorsIcon from "@mui/icons-material/Sensors";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import MapIcon from "@mui/icons-material/Map";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import "./App.css";
 
 // Importing page components
 import ConnectDisconnect from "./pages/ConnectDisconnect";
@@ -54,7 +53,8 @@ const navItems = [
 ];
 
 const App = () => {
-  // State for managing the sidebar visibility
+  
+
   const [isDrawerOpen, setDrawerOpen] = useState(true);
 
   // State for managing light/dark theme

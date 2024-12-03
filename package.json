@@ -1,21 +1,46 @@
 {
   "name": "OrbitConfigrator",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "electron:start": "electron ./src/main/main.js",
     "renderer:dev": "vite",
     "renderer:build": "vite build",
     "renderer:preview": "vite preview",
-    "dev": "concurrently --kill-others \"yarn renderer:dev\" \"wait-on http://localhost:5173 && yarn electron:start\""
+    "dev": "concurrently --kill-others \"yarn renderer:dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development yarn electron:start\"",
+    "build": "yarn run renderer:build && yarn run electron-builder"
+  },
+  "main": "./src/main/main.js",
+  "build": {
+    "appId": "com.example.orbitconfigrator",
+    "productName": "orbitconfigrator",
+    "files": [
+      "build/renderer/**/*",
+      "./src/main/main.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "build"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
+    }
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
+    "d3": "^7.9.0",
+    "node-mavlink": "^2.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.0.1"
+    "react-router-dom": "^7.0.1",
+    "serialport": "^12.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
@@ -23,7 +48,9 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
     "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "eslint": "^9.15.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
@@ -32,8 +59,7 @@
     "vite": "^6.0.1",
     "wait-on": "^8.0.1"
   },
-  "type": "module",
   "repository": "git@github.com:Witty-Wizard/OrbitConfigrator.git",
   "author": "Witty-Wizard <agarwalshashank429+github@gmail.com>",
-  "license": "MIT"
+  "license": "GPL-3.0-only"
 }
