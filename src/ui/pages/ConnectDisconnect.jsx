@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, TextField, Autocomplete } from "@mui/material";
 
-const ConnectDisconnect = () => {
+const ConnectDisconnect = ({ isSidebarOpen }) => {
   const [availablePorts, setAvailablePorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState("");
   const [isConnected, setIsConnected] = useState(false);
@@ -52,7 +52,13 @@ const ConnectDisconnect = () => {
   }, []);
 
   return (
-    <Box sx={{ minWidth: 120 }}>
+    <Box
+      sx={{
+        marginLeft: isSidebarOpen ? "250px" : "70px", // Adjust width dynamically
+        transition: "margin-left 0.3s ease",
+        padding: "16px",
+      }}
+    >
       <Autocomplete
         freeSolo
         id="port-select"
@@ -68,14 +74,14 @@ const ConnectDisconnect = () => {
         renderInput={(params) => (
           <TextField {...params} label="Port" variant="outlined" />
         )}
+        sx={{ mb: 2 }} // Add spacing between the dropdown and button
       />
-
+      
       <Button
         variant="contained"
         color={isConnected ? "secondary" : "primary"}
         onClick={isConnected ? handleDisconnect : handleConnect}
         disabled={!selectedPort}
-        sx={{ mt: 2 }}
       >
         {isConnected ? "Disconnect" : "Connect"}
       </Button>
